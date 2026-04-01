@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  bulletin:
+    build: .
+    ports:
+      - "9260:9260"
+    environment:
+      - PORT=9260
+      - DATA_DIR=/data
+      - BULLETIN_LICENSE_KEY=
+    volumes:
+      - bulletin_data:/data
+    restart: unless-stopped
+volumes:
+  bulletin_data:
