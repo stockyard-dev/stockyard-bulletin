@@ -1,120 +1,39 @@
 package server
 
 var dashboardHTML = []byte(`<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stockyard Bulletin</title>
-<style>
-  :root {
-    --bg: #1a1410;
-    --surface: #241c15;
-    --border: #3d2e1e;
-    --rust: #c4622d;
-    --leather: #8b5e3c;
-    --cream: #f5e6c8;
-    --muted: #7a6550;
-    --text: #e8d5b0;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono', monospace, sans-serif; min-height: 100vh; }
-  header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; align-items: center; gap: 1rem; }
-  .logo { color: var(--rust); font-size: 1.25rem; font-weight: 700; letter-spacing: 0.05em; }
-  .badge { background: var(--rust); color: var(--cream); font-size: 0.65rem; padding: 0.2rem 0.5rem; border-radius: 3px; font-weight: 600; text-transform: uppercase; }
-  main { max-width: 960px; margin: 2rem auto; padding: 0 2rem; }
-  .hero { text-align: center; padding: 3rem 0 2rem; }
-  .hero h1 { font-size: 2rem; color: var(--cream); margin-bottom: 0.5rem; }
-  .hero p { color: var(--muted); font-size: 0.95rem; max-width: 480px; margin: 0 auto; }
-  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
-  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 1.25rem; text-align: center; }
-  .stat-value { font-size: 1.75rem; font-weight: 700; color: var(--rust); }
-  .stat-label { font-size: 0.75rem; color: var(--muted); margin-top: 0.25rem; text-transform: uppercase; letter-spacing: 0.05em; }
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 1.5rem; margin-bottom: 1rem; }
-  .card h2 { font-size: 1rem; color: var(--cream); margin-bottom: 1rem; }
-  .tier-box { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .tier { background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 1rem; }
-  .tier.pro { border-color: var(--rust); }
-  .tier-name { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.5rem; }
-  .tier.pro .tier-name { color: var(--rust); }
-  .tier-desc { font-size: 0.85rem; color: var(--text); }
-  .tier-price { font-size: 0.8rem; color: var(--leather); margin-top: 0.5rem; }
-  footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.75rem; }
-  footer a { color: var(--leather); text-decoration: none; }
-  .endpoint-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-  .endpoint-table th { text-align: left; color: var(--muted); padding: 0.5rem; border-bottom: 1px solid var(--border); }
-  .endpoint-table td { padding: 0.5rem; border-bottom: 1px solid var(--border); color: var(--text); }
-  .method { color: var(--rust); font-weight: 600; }
-</style>
-</head>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Stockyard Bulletin</title><style>:root{--bg:#1a1410;--surface:#241c15;--border:#3d2e1e;--rust:#c4622d;--cream:#f5e6c8;--muted:#7a6550;--text:#e8d5b0}*{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace,sans-serif}header{background:var(--surface);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;gap:1rem}.logo{color:var(--rust);font-size:1.25rem;font-weight:700}.badge{background:var(--rust);color:var(--cream);font-size:0.65rem;padding:0.2rem 0.5rem;border-radius:3px;font-weight:600;text-transform:uppercase}main{max-width:1100px;margin:0 auto;padding:2rem}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}.stat{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1.25rem;text-align:center}.stat-value{font-size:1.75rem;font-weight:700;color:var(--rust)}.stat-label{font-size:0.75rem;color:var(--muted);margin-top:0.25rem;text-transform:uppercase;letter-spacing:0.05em}.tabs{display:flex;gap:0.5rem;margin-bottom:1.5rem}.tab{background:var(--surface);border:1px solid var(--border);color:var(--muted);padding:0.5rem 1rem;border-radius:4px;cursor:pointer;font-size:0.85rem;font-family:inherit}.tab.active{background:var(--rust);color:var(--cream);border-color:var(--rust)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1.5rem;margin-bottom:1rem}.card h2{font-size:0.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:1rem}.full{grid-column:1/-1}.form-row{display:flex;gap:0.5rem;margin-bottom:0.75rem;flex-wrap:wrap}select,input,textarea{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:0.5rem 0.75rem;border-radius:4px;font-family:inherit;font-size:0.85rem;flex:1}textarea{resize:vertical;flex:none;width:100%;min-height:120px}.btn{background:var(--rust);color:var(--cream);border:none;padding:0.5rem 1rem;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.85rem;font-weight:600}.btn:hover{opacity:0.85}.btn-sm{padding:0.25rem 0.6rem;font-size:0.75rem}.btn-danger{background:#7a2020}.btn-send{background:#1a6a1a;color:#5cb85c}table{width:100%;border-collapse:collapse;font-size:0.82rem}th{text-align:left;color:var(--muted);padding:0.5rem;border-bottom:1px solid var(--border);font-size:0.75rem;text-transform:uppercase}td{padding:0.5rem;border-bottom:1px solid var(--border)}.empty{color:var(--muted);font-size:0.85rem;padding:1rem 0;text-align:center}.badge-a{background:#1a3a1a;color:#5cb85c;border:1px solid #2d5a2d;border-radius:3px;padding:0.1rem 0.4rem;font-size:0.72rem}.badge-u{background:#3a1a1a;color:#d9534f;border:1px solid #5a2d2d;border-radius:3px;padding:0.1rem 0.4rem;font-size:0.72rem}.badge-d{background:#2a2a1a;color:#b8a060;border:1px solid #4a4a2a;border-radius:3px;padding:0.1rem 0.4rem;font-size:0.72rem}.badge-s{background:#1a3a1a;color:#5cb85c;border:1px solid #2d5a2d;border-radius:3px;padding:0.1rem 0.4rem;font-size:0.72rem}</style></head>
 <body>
-<header>
-  <span class="logo">⬡ Stockyard</span>
-  <span style="color:var(--muted);">/</span>
-  <span style="color:var(--cream);font-weight:600;">Bulletin</span>
-  <span class="badge">v0.1.0</span>
-</header>
+<header><span class="logo">&#x2B21; Stockyard</span><span style="color:var(--muted)">/</span><span style="color:var(--cream);font-weight:600">Bulletin</span><span class="badge">Newsletter</span></header>
 <main>
-  <div class="hero">
-    <h1>Bulletin</h1>
-    <p>Email list and newsletter tool — manage subscribers, send campaigns via your own SMTP</p>
-  </div>
-  <div class="stats">
-    <div class="stat">
-      <div class="stat-value" id="stat-items">—</div>
-      <div class="stat-label">Total Items</div>
-    </div>
-    <div class="stat">
-      <div class="stat-value">9260</div>
-      <div class="stat-label">Port</div>
-    </div>
-    <div class="stat">
-      <div class="stat-value" id="stat-tier">—</div>
-      <div class="stat-label">Tier</div>
-    </div>
-  </div>
-  <div class="card">
-    <h2>Tier &amp; Limits</h2>
-    <div class="tier-box">
-      <div class="tier">
-        <div class="tier-name">Free</div>
-        <div class="tier-desc">1 list, 500 subscribers</div>
-        <div class="tier-price">$0/mo</div>
-      </div>
-      <div class="tier pro">
-        <div class="tier-name">Pro</div>
-        <div class="tier-desc">Unlimited lists and subscribers</div>
-        <div class="tier-price">$4.99/mo</div>
-      </div>
-    </div>
-  </div>
-  <div class="card">
-    <h2>API Endpoints</h2>
-    <table class="endpoint-table">
-      <thead><tr><th>Method</th><th>Path</th><th>Description</th></tr></thead>
-      <tbody>
-        <tr><td class="method">GET</td><td>/health</td><td>Health check</td></tr>
-        <tr><td class="method">GET</td><td>/api/version</td><td>Version info</td></tr>
-        <tr><td class="method">GET</td><td>/api/limits</td><td>Current tier limits</td></tr>
-        <tr><td class="method">GET</td><td>/api/items</td><td>List items</td></tr>
-        <tr><td class="method">POST</td><td>/api/items</td><td>Create item</td></tr>
-        <tr><td class="method">GET</td><td>/api/items/{id}</td><td>Get item</td></tr>
-        <tr><td class="method">PUT</td><td>/api/items/{id}</td><td>Update item</td></tr>
-        <tr><td class="method">DELETE</td><td>/api/items/{id}</td><td>Delete item</td></tr>
-      </tbody>
-    </table>
-  </div>
+<div class="stats"><div class="stat"><div class="stat-value" id="s1">0</div><div class="stat-label">Total Subs</div></div><div class="stat"><div class="stat-value" id="s2">0</div><div class="stat-label">Active</div></div><div class="stat"><div class="stat-value" id="s3">0</div><div class="stat-label">Campaigns</div></div><div class="stat"><div class="stat-value" id="s4">0</div><div class="stat-label">Sent</div></div></div>
+<div class="tabs"><button class="tab active" onclick="showTab('subs')">Subscribers</button><button class="tab" onclick="showTab('campaigns')">Campaigns</button></div>
+<div id="tab-subs">
+<div class="grid">
+<div class="card"><h2>Add Subscriber</h2>
+<div class="form-row"><input id="f-email" placeholder="email@example.com"><input id="f-name" placeholder="Name (optional)"></div>
+<div class="form-row"><input id="f-tags" placeholder="Tags"><button class="btn btn-sm" onclick="addSub()">Subscribe</button></div></div>
+<div class="card"><h2>Filter</h2><select id="sub-filter" onchange="loadSubs()"><option value="">All</option><option value="active">Active</option><option value="unsubscribed">Unsubscribed</option></select></div>
+</div>
+<div class="card full"><h2>Subscribers</h2><div id="sub-list"><div class="empty">No subscribers</div></div></div>
+</div>
+<div id="tab-campaigns" style="display:none">
+<div class="card full"><h2>New Campaign</h2>
+<div class="form-row"><input id="c-subject" placeholder="Subject line"></div>
+<textarea id="c-body" rows="8" placeholder="Campaign body..."></textarea>
+<div style="margin-top:0.75rem;display:flex;gap:0.5rem"><button class="btn btn-sm" onclick="createCampaign()">Save Draft</button></div></div>
+<div class="card full"><h2>Campaigns</h2><div id="camp-list"><div class="empty">No campaigns</div></div></div>
+</div>
 </main>
-<footer>
-  <a href="https://stockyard.dev">stockyard.dev</a> &mdash; Creator & Small Business &mdash; Apache 2.0
-</footer>
 <script>
-fetch('/api/limits').then(r=>r.json()).then(d=>{
-  document.getElementById('stat-tier').textContent = d.tier.toUpperCase();
-});
-fetch('/api/items').then(r=>r.json()).then(d=>{
-  document.getElementById('stat-items').textContent = Array.isArray(d) ? d.length : '0';
-});
-</script>
-</body>
-</html>`)
+function load(){fetch('/api/stats').then(function(r){return r.json()}).then(function(d){document.getElementById('s1').textContent=d.total_subscribers||0;document.getElementById('s2').textContent=d.active_subscribers||0;document.getElementById('s3').textContent=d.campaigns||0;document.getElementById('s4').textContent=d.sent_campaigns||0})}
+function showTab(t){['subs','campaigns'].forEach(function(id){var el=document.getElementById('tab-'+id);if(el)el.style.display=id===t?'block':'none'});document.querySelectorAll('.tab').forEach(function(b,i){b.classList.toggle('active',['subs','campaigns'][i]===t)});if(t==='campaigns')loadCampaigns()}
+function loadSubs(){var s=document.getElementById('sub-filter').value;fetch('/api/subscribers'+(s?'?status='+s:'')).then(function(r){return r.json()}).then(function(list){var el=document.getElementById('sub-list');el.innerHTML=list.length?'<table><thead><tr><th>Email</th><th>Name</th><th>Tags</th><th>Status</th><th></th></tr></thead><tbody>'+list.map(function(s){var bc=s.status==='active'?'badge-a':'badge-u';return'<tr><td>'+s.email+'</td><td>'+s.name+'</td><td>'+s.tags+'</td><td><span class="'+bc+'">'+s.status+'</span></td><td>'+(s.status==='active'?'<button class="btn btn-sm btn-danger" onclick="unsub('+s.id+')">Unsub</button> ':'')+ '<button class="btn btn-sm btn-danger" onclick="delSub('+s.id+')">Del</button></td></tr>'}).join('')+"</tbody></table>":'<div class="empty">No subscribers</div>'})}
+function loadCampaigns(){fetch('/api/campaigns').then(function(r){return r.json()}).then(function(list){var el=document.getElementById('camp-list');el.innerHTML=list.length?'<table><thead><tr><th>Subject</th><th>Status</th><th>Sent</th><th>Time</th><th></th></tr></thead><tbody>'+list.map(function(c){var bc=c.status==='sent'?'badge-s':'badge-d';return'<tr><td style="color:var(--cream)">'+c.subject+'</td><td><span class="'+bc+'">'+c.status+'</span></td><td>'+c.sent_count+'</td><td style="color:var(--muted);font-size:0.75rem">'+(c.sent_at||c.created_at)+'</td><td>'+(c.status==='draft'?'<button class="btn btn-sm btn-send" onclick="sendCampaign('+c.id+')">Send</button> ':'')+ '<button class="btn btn-sm btn-danger" onclick="delCampaign('+c.id+')">Del</button></td></tr>'}).join('')+"</tbody></table>":'<div class="empty">No campaigns</div>'})}
+function addSub(){var d={email:document.getElementById('f-email').value.trim(),name:document.getElementById('f-name').value.trim(),tags:document.getElementById('f-tags').value.trim()};if(!d.email)return;fetch('/api/subscribers',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)}).then(function(){document.getElementById('f-email').value='';loadSubs();load()})}
+function unsub(id){fetch('/api/subscribers/'+id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'unsubscribed'})}).then(function(){loadSubs();load()})}
+function delSub(id){fetch('/api/subscribers/'+id,{method:'DELETE'}).then(function(){loadSubs();load()})}
+function createCampaign(){var d={subject:document.getElementById('c-subject').value.trim(),body:document.getElementById('c-body').value.trim()};if(!d.subject||!d.body)return;fetch('/api/campaigns',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)}).then(function(){document.getElementById('c-subject').value='';document.getElementById('c-body').value='';loadCampaigns();load()})}
+function sendCampaign(id){if(!confirm('Send this campaign to all active subscribers?'))return;fetch('/api/campaigns/'+id+'/send',{method:'POST'}).then(function(r){return r.json()}).then(function(d){alert('Sent to '+d.recipients+' subscribers');loadCampaigns();load()})}
+function delCampaign(id){fetch('/api/campaigns/'+id,{method:'DELETE'}).then(function(){loadCampaigns();load()})}
+load();loadSubs();
+</script></body></html>`)
