@@ -36,4 +36,5 @@ function createCampaign(){var d={subject:document.getElementById('c-subject').va
 function sendCampaign(id){if(!confirm('Send this campaign to all active subscribers?'))return;fetch('/api/campaigns/'+id+'/send',{method:'POST'}).then(function(r){return r.json()}).then(function(d){alert('Sent to '+d.recipients+' subscribers');loadCampaigns();load()})}
 function delCampaign(id){fetch('/api/campaigns/'+id,{method:'DELETE'}).then(function(){loadCampaigns();load()})}
 load();loadSubs();
+fetch('/api/tier').then(r=>r.json()).then(j=>{if(j.tier==='free'){var b=document.getElementById('upgrade-banner');if(b)b.style.display='block'}}).catch(()=>{var b=document.getElementById('upgrade-banner');if(b)b.style.display='block'});
 </script></body></html>`)

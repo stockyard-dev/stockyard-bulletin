@@ -15,6 +15,7 @@ func(s *Server)routes(){
     s.mux.HandleFunc("POST /api/campaigns/{id}/send",s.handleSendCampaign)
     s.mux.HandleFunc("DELETE /api/campaigns/{id}",s.handleDeleteCampaign)
     s.mux.HandleFunc("GET /",s.handleUI)
+s.mux.HandleFunc("GET /api/tier",func(w http.ResponseWriter,r *http.Request){wj(w,200,map[string]any{"tier":s.limits.Tier,"upgrade_url":"https://stockyard.dev/bulletin/"})})
 }
 func(s *Server)handleHealth(w http.ResponseWriter,r *http.Request){writeJSON(w,200,map[string]string{"status":"ok","service":"stockyard-bulletin"})}
 func writeJSON(w http.ResponseWriter,status int,v interface{}){w.Header().Set("Content-Type","application/json");w.WriteHeader(status);json.NewEncoder(w).Encode(v)}
